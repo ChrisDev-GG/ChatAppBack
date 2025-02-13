@@ -30,15 +30,28 @@ const sendDiscordWebhook = async (roomId: string) => {
 
 // Función para configurar WebSocket
 export const setupWebSocket = (server: any): void => {
+    // Configuración CORS más flexible
+    const allowedOrigins = [
+        'http://localhost:4200',
+        'https://chats.christopher-dev.cl',
+        'https://chats-api.christopher-dev.cl'
+    ];
+    
+    // Middlewares
     const io = new SocketIO(server, {
         cors: {
-            origin: process.env.ENV === "production" ? process.env.FRONTEND_URL : "http://localhost:4200",
+            origin: (origin, callback) => {
+                if (!origin || allowedOrigins.includes(origin)) {
+                    callback(null, true);
+                } else {
+                    callback(new Error('Not allowed by CORS'));
+                }
+            },
             methods: ["GET", "POST"],
-            credentials: true
         },
-        transports: ['websocket', 'polling'], 
-        path: '/socket.io/' 
-    }); 
+        transports: ['websocket', 'polling'],
+        path: '/socket.io/'
+    });
     
     io.on('connection', (socket) => {
         socket.on('join room', async (roomId: string) => {
