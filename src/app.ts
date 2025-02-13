@@ -3,6 +3,8 @@ import cors from "cors";
 import http from "http";
 import chatRoutes from "./routes/chat.routes";
 import { setupWebSocket } from "./config/socket.config";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
@@ -23,5 +25,5 @@ app.use("/api/chat", chatRoutes);
 // Iniciar servidor
 const PORT = 3000;
 server.listen(PORT, () => {
-    console.log(`Servidor escuchando en http://localhost:${PORT}`);
+    console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
